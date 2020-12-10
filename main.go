@@ -22,7 +22,7 @@ func main() {
 	var listen = flag.String("listen", ":8080", "Listen address for proxy")
 	var cert = flag.String("cert", "/etc/pki/server.pem", "File to load with CERT")
 	var key = flag.String("key", "/etc/pki/server.pem", "File to load with KEY")
-	var tls_enabled = flag.Bool("tls", false, "Enable TLS (default -tls=false)")
+	var tls_enabled = flag.Bool("tls", false, "Enable TLS on listening port (default -tls=false)")
 	flag.Parse()
 
 	var l net.Listener
@@ -52,7 +52,7 @@ func main() {
 
 		go func(c net.Conn) {
 			defer c.Close()
-			buf_size := 3*1024*1024
+			buf_size := 3 * 1024 * 1024
 			buf := make([]byte, buf_size) // simple buffer for incoming requests
 			hostport := ""
 			get_line := ""
