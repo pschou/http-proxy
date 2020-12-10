@@ -17,3 +17,13 @@ Else if you want to specify a port use
 ```
 http-proxy --listen :2000
 ```
+
+Or listen on a specific port and host:
+```
+http-proxy --listen 1.2.3.4:2000
+```
+
+The corresponding pre-built container can be pulled here:
+```
+docker pull pschou/http-proxy:0.1
+```
