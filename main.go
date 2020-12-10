@@ -52,12 +52,12 @@ func main() {
 
 		go func(c net.Conn) {
 			defer c.Close()
-			buf_size := 1024
+			buf_size := 3*1024*1024
 			buf := make([]byte, buf_size) // simple buffer for incoming requests
 			hostport := ""
 			get_line := ""
 
-			for i := 0; i < buf_size; i++ { // Read one charater at a time
+			for i := 0; i < buf_size-1; i++ { // Read one charater at a time
 				if _, err := c.Read(buf[i : i+1]); err != nil {
 					break
 				}
