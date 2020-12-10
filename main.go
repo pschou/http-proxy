@@ -17,7 +17,7 @@ type DNS struct {
 var DNSCache = make(map[string]DNS, 0)
 
 func main() {
-	var listen = flag.String("listen", ":2000", "Listen address for proxy")
+	var listen = flag.String("listen", ":8080", "Listen address for proxy")
 	flag.Parse()
 	l, err := net.Listen("tcp", *listen)
 	if err != nil {
