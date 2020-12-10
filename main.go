@@ -1,6 +1,8 @@
 package main
 
 import (
+	"crypto/rand"
+	"crypto/tls"
 	"flag"
 	"io"
 	"log"
@@ -18,11 +20,29 @@ var DNSCache = make(map[string]DNS, 0)
 
 func main() {
 	var listen = flag.String("listen", ":8080", "Listen address for proxy")
+	var cert = flag.String("cert", "/etc/pki/server.pem", "File to load with CERT")
+	var key = flag.String("key", "/etc/pki/server.pem", "File to load with KEY")
+	var tls_enabled = flag.Bool("tls", false, "Enable TLS (default -tls=false)")
 	flag.Parse()
-	l, err := net.Listen("tcp", *listen)
-	if err != nil {
-		log.Fatal(err)
+
+	var l net.Listener
+	if *tls_enabled {
+		cert, err := tls.LoadX509KeyPair(*cert, *key)
+		if err != nil {
+			log.Fatalf("server: loadkeys: %s", err)
+		}
+		config := tls.Config{Certificates: []tls.Certificate{cert}}
+		config.Rand = rand.Reader
+		if l, err = tls.Listen("tcp", *listen, &config); err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		var err error
+		if l, err = net.Listen("tcp", *listen); err != nil {
+			log.Fatal(err)
+		}
 	}
+
 	defer l.Close()
 	for {
 		conn, err := l.Accept() // Wait for a connection.
