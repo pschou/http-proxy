@@ -20,8 +20,8 @@ var DNSCache = make(map[string]DNS, 0)
 
 func main() {
 	var listen = flag.String("listen", ":8080", "Listen address for proxy")
-	var cert = flag.String("cert", "/etc/pki/server.pem", "File to load with CERT")
-	var key = flag.String("key", "/etc/pki/server.pem", "File to load with KEY")
+	var cert = flag.String("cert", "/etc/pki/server.pem", "File to load with CERT when TLS is enabled")
+	var key = flag.String("key", "/etc/pki/server.pem", "File to load with KEY when TLS is enabled")
 	var tls_enabled = flag.Bool("tls", false, "Enable TLS on listening port (default -tls=false)")
 	flag.Parse()
 
@@ -31,7 +31,7 @@ func main() {
 		if err != nil {
 			log.Fatalf("server: loadkeys: %s", err)
 		}
-		config := tls.Config{Certificates: []tls.Certificate{cert}}
+		config := tls.Config{Certificates: []tls.Certificate{cert}, InsecureSkipVerify: true}
 		config.Rand = rand.Reader
 		if l, err = tls.Listen("tcp", *listen, &config); err != nil {
 			log.Fatal(err)
@@ -66,7 +66,8 @@ func main() {
 					if strings.HasPrefix(s, "CONNECT ") {
 						parts := strings.SplitN(s, " ", 3)
 						hostport = parts[1]
-					} else if strings.HasPrefix(s, "GET ") || strings.HasPrefix(s, "POST ") {
+					} else if strings.HasPrefix(s, "GET ") || strings.HasPrefix(s, "POST ") ||
+						strings.HasPrefix(s, "HEAD ") || strings.HasPrefix(s, "OPTIONS ") {
 						parts := strings.SplitN(s, " ", 3)
 						hostport = parts[1]
 						if strings.HasPrefix(hostport, "http://") {
