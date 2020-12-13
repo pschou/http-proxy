@@ -22,7 +22,7 @@ var DNSCache = make(map[string]DNS, 0)
 
 func main() {
 	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "Very simple HTTP-Proxy, written by Paul Schou github@paulschou.com in December 2020\nIf you find this useful, please hit me up and let me know.\n\n Usage of %s:\n", os.Args[0])
+		fmt.Fprintf(os.Stderr, "Simple HTTP-Proxy, written by Paul Schou github@paulschou.com in December 2020\nAll rights reserved, personal use only, provided AS-IS -- not responsible for loss.\nUsage implies agreement.  For requests or support, please contact above.\n\n Usage of %s:\n", os.Args[0])
 		flag.PrintDefaults()
 	}
 	var listen = flag.String("listen", ":8080", "Listen address for proxy")
