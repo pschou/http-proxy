@@ -71,18 +71,25 @@ func main() {
 					s := string(buf[0 : i+1])
 					if strings.HasPrefix(s, "CONNECT ") {
 						parts := strings.SplitN(s, " ", 3)
-						if len(parts) < 3 {
+						if len(parts) < 2 {
 							break
 						}
 						hostport = parts[1]
 					} else if strings.HasPrefix(s, "GET ") || strings.HasPrefix(s, "POST ") ||
 						strings.HasPrefix(s, "HEAD ") || strings.HasPrefix(s, "OPTIONS ") {
 						parts := strings.SplitN(s, " ", 3)
+						if len(parts) < 3 || len(parts[1]) < 8 {
+							break
+						}
 						hostport = parts[1]
 						if strings.HasPrefix(hostport, "http://") {
 							hostport = strings.SplitN(hostport[7:], "/", 2)[0]
 						}
 						paths := strings.SplitN(parts[1], "/", 4)
+						if len(parts) < 4 {
+							hostport = ""
+							break
+						}
 						get_line = parts[0] + " /" + paths[3] + " " + parts[2]
 						break
 					} else if i <= 1 { // end of connect request!
