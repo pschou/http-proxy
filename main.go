@@ -71,6 +71,9 @@ func main() {
 					s := string(buf[0 : i+1])
 					if strings.HasPrefix(s, "CONNECT ") {
 						parts := strings.SplitN(s, " ", 3)
+						if len(parts) < 3 {
+							break
+						}
 						hostport = parts[1]
 					} else if strings.HasPrefix(s, "GET ") || strings.HasPrefix(s, "POST ") ||
 						strings.HasPrefix(s, "HEAD ") || strings.HasPrefix(s, "OPTIONS ") {
